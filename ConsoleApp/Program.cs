@@ -1,18 +1,31 @@
-﻿namespace ConsoleApp
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+﻿using ConsoleApp.Data;
+using ConsoleApp.Services;
+using System;
 
-    internal class Program
+namespace ConsoleApp
+{
+    public class Program
     {
         static void Main(string[] args)
         {
-            var reader = new DataReader();
-            reader.ImportAndPrintData("dataa.csv");
+            try
+            {
+                var fileName = "data.csv";
+
+                if (args.Length > 0)
+                    fileName = args[0];
+
+                var reader = new DataReader(new FileImport(), new ConsolePrinter(), new EmptyLogger());
+
+                reader.ImportData(fileName);
+                reader.PrintData();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            Console.ReadLine();
         }
     }
 }
