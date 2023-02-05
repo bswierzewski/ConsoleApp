@@ -102,37 +102,43 @@ namespace ConsoleApp.Data
             return importedObject;
         }
 
-        /// <summary>
-        /// Print records with database pattern
-        /// </summary>
+        // This method prints information about the databases in the imported objects list
         public void PrintData()
         {
-            // Loop through all the ImportedObjects and find the ones that are databases
+            // Loop through each database in the imported objects list
             foreach (var database in ImportedObjects.Where(x => x.IsDatabase))
             {
-                // Add a string to the results that represents the database information
+                // Print the name and number of tables for the database
                 _printProvider.Print($"Database '{database.Name}' ({database.NumberOfChildren} tables)");
-                // Add the results of GetTableResults to the results list
+
+                // Call the PrintTables method to print information about the tables in the database
                 PrintTables(database.Children);
             }
         }
 
+        // This method prints information about the tables in a database
         private void PrintTables(IEnumerable<ImportedObject> tables)
         {
-            // Loop through all the ImportedObjects and find the ones that are tables
+            // Loop through each table in the tables list
             foreach (var table in tables)
             {
+                // Print the schema and name of the table, as well as the number of columns in the table
                 _printProvider.Print($"\tTable '{table.Schema}.{table.Name}' ({table.NumberOfChildren} columns)");
 
-                // Add the results of GetColumnResults to the results list
+                // Call the PrintColumns method to print information about the columns in the table
                 PrintColumns(table.Children);
             }
         }
 
+        // This method prints information about the columns in a table
         private void PrintColumns(IEnumerable<ImportedObject> columns)
         {
+            // Loop through each column in the columns list
             foreach (var column in columns)
+            {
+                // Print the name of the column, its data type, and whether or not it accepts null values
                 _printProvider.Print($"\t\tColumn '{column.Name}' with {column.DataType} data type {(column.IsNullable ? "accepts nulls" : "with no nulls")}");
+            }
         }
     }
 }

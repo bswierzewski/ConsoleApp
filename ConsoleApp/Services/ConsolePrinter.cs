@@ -3,11 +3,9 @@ using System;
 
 namespace ConsoleApp.Services
 {
-    /// <summary>
-    /// Console implementation IPrintProvider
-    /// </summary>
     public class ConsolePrinter : IPrintProvider
     {
+        // Print text use WriteLine
         public void Print(string text)
             => Console.WriteLine(text);
     }

@@ -2,10 +2,9 @@
 
 namespace ConsoleApp.Services
 {
-    /// <summary>
-    /// Empty logger implementation ILogger
     public class EmptyLogger : ILogger
     {
+        // Mock error message
         public void Error(string message) { }
     }
 }

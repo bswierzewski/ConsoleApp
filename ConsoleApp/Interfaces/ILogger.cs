@@ -2,6 +2,7 @@
 {
     public interface ILogger
     {
+        // Log error message 
         void Error(string message);
     }
 }
