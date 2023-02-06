@@ -9,7 +9,7 @@ namespace ConsoleApp.Data
     public class DataReader
     {
         // Constant value used to identify if a value in a csv is nullable
-        private const string NullableValueInCSV = "1";
+        private const string _nullableValueInCSV = "1";
         // Import provider instance to get csv data from
         private readonly IImportProvider _importProvider;
         // Printer provider instance to print results to
@@ -29,6 +29,8 @@ namespace ConsoleApp.Data
             _logger = logger;
         }
 
+        #region ImportData
+
         /// <summary>
         /// </summary>
         /// <param name="delimeter">Delimeter used in CSV</param>
@@ -40,36 +42,62 @@ namespace ConsoleApp.Data
             // Get imported csv lines from provider
             var importedLines = _importProvider.GetImportedLines(fileName);
 
-            // Loop through each line in the imported lines
-            foreach (var line in importedLines)
+            if (HasImporedLines(importedLines))
             {
-                // If is line is empty skip
-                if (string.IsNullOrEmpty(line))
+                _logger.Error($"Imported lines is empty");
+                return;
+            }
+
+            // Loop through each line in the imported lines
+            foreach (var (line, index) in importedLines.Select((line, index) => (line, index)))
+            {
+                try
                 {
-                    _logger.Error("Empty line skip iteration");
+                    // If is line is empty skip
+                    if (string.IsNullOrEmpty(line))
+                    {
+                        _logger.Error($"Line {index}: Empty line, skip this line");
+                        continue;
+                    }
+
+                    // Clean and split line into an array of values
+                    var values = PrepareValues(line, delimeter);
+
+                    if (!IsValidArgumentLength(values))
+                    {
+                        _logger.Error($"Line {index}: Parse error with values: {line}");
+                        continue;
+                    }
+
+                    // Add the newly created ImportedObject to the ImportedObjects list
+                    ImportedObjects.Add(CreateImportedObject(values));
+                }
+                catch (Exception ex)
+                {
+                    // Log error and handle next line
+                    _logger.Error(ex);
+
                     continue;
                 }
-
-                // Clean and split line into an array of values
-                var values = line.Trim()
-                    .Replace(" ", "")
-                    .Replace(Environment.NewLine, "")
-                    .Split(delimeter);
-
-                // Check if the length of the values array is 7 to prevent IndexOutOfRange
-                if (values.Length != 7)
-                {
-                    _logger.Error($"Parse error with line: {line}");
-                    continue;
-                }
-
-                // Add the newly created ImportedObject to the ImportedObjects list
-                ImportedObjects.Add(CreateImportedObject(values));
             }
 
             // Private method to assing children to thier parent
             AssingChildrenToObjects();
         }
+
+        private bool HasImporedLines(IEnumerable<string> importedLines)
+            => importedLines == null || importedLines.Any() == false;
+
+        // Clean from spaces, new line and split line into an array of values
+        public string[] PrepareValues(string line, char delimeter)
+            => line.Trim()
+                   .Replace(" ", "")
+                   .Replace(Environment.NewLine, "")
+                   .Split(delimeter);
+
+        // Check if the length of the values array is 7 to prevent IndexOutOfRange
+        private bool IsValidArgumentLength(string[] values)
+            => values.Length == 7;
 
         // Private method to assign children to objects based on parent values
         private void AssingChildrenToObjects()
@@ -96,14 +124,18 @@ namespace ConsoleApp.Data
                     Type = values[4],
                 },
                 DataType = values[5],
-                IsNullable = values[6] == NullableValueInCSV
+                IsNullable = values[6] == _nullableValueInCSV
             };
 
             return importedObject;
         }
 
+        #endregion
+
+        #region PrintData
+
         // This method prints information about the databases in the imported objects list
-        public void PrintData()
+        public void PrintDatabases()
         {
             // Loop through each database in the imported objects list
             foreach (var database in ImportedObjects.Where(x => x.IsDatabase))
@@ -140,5 +172,7 @@ namespace ConsoleApp.Data
                 _printProvider.Print($"\t\tColumn '{column.Name}' with {column.DataType} data type {(column.IsNullable ? "accepts nulls" : "with no nulls")}");
             }
         }
+
+        #endregion
     }
 }

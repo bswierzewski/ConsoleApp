@@ -52,7 +52,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ConsolePrinter.cs" />
-    <Compile Include="Services\EmptyLogger.cs" />
+    <Compile Include="Services\ConsoleLogger.cs" />
     <Compile Include="Services\FileImport.cs" />
   </ItemGroup>
   <ItemGroup>
