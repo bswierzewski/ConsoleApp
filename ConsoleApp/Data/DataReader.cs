@@ -48,8 +48,8 @@ namespace ConsoleApp.Data
                 return;
             }
 
-            // Loop through each line in the imported lines
-            foreach (var (line, index) in importedLines.Select((line, index) => (line, index)))
+            // Loop through each line and current line index in the imported lines
+            foreach (var (line, index) in importedLines.Select((line, index) => (line, ++index)))
             {
                 try
                 {

@@ -13,7 +13,7 @@ namespace ConsoleApp
 
             try
             {
-                // Set file name to "data.csv" if no command-line argument is provided
+                // Set file name to "DataSource\data.csv" if no command-line argument is provided
                 var fileName = @"DataSource\data.csv";
                 if (args.Length == 1)
                     fileName = args[0];
