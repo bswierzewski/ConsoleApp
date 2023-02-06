@@ -50,14 +50,14 @@ namespace ConsoleApp.Tests
             // Assert
 
             // Check log error
-            _logger.Verify(p => p.Error("Line 2: Empty line, skip this line"));
-            _logger.Verify(p => p.Error("Line 4: Parse error with values: DB;DB1;dbo;;;NVARCHAR;1;2;"));
-            _logger.Verify(p => p.Error("Line 5: Parse error with values: DB;DB1;"));
+            _logger.Verify(p => p.Error("Line 3: Empty line, skip this line"));
+            _logger.Verify(p => p.Error("Line 5: Parse error with values: DB;DB1;dbo;;;NVARCHAR;1;2;"));
+            _logger.Verify(p => p.Error("Line 6: Parse error with values: DB;DB1;"));
 
             // Verify correct object mappings
             Assert.AreEqual(3, _dataReader.ImportedObjects.Count);
 
-            var firstLine = _dataReader.ImportedObjects[0];
+            var firstLine = _dataReader.ImportedObjects.FirstOrDefault();
 
             Assert.AreEqual("Type", firstLine.Type);
             Assert.AreEqual("Name", firstLine.Name);
@@ -67,7 +67,7 @@ namespace ConsoleApp.Tests
             Assert.AreEqual("DataType", firstLine.DataType);
             Assert.AreEqual(false, firstLine.IsNullable);
 
-            var db = _dataReader.ImportedObjects[1];
+            var db = _dataReader.ImportedObjects.Skip(1).FirstOrDefault();
 
             Assert.AreEqual("DB", db.Type);
             Assert.AreEqual("DB1", db.Name);
@@ -77,7 +77,7 @@ namespace ConsoleApp.Tests
             Assert.AreEqual("NVARCHAR", db.DataType);
             Assert.AreEqual(false, db.IsNullable);
 
-            var children = _dataReader.ImportedObjects[1].Children.FirstOrDefault();
+            var children = _dataReader.ImportedObjects.Skip(1).FirstOrDefault().Children.FirstOrDefault();
 
             Assert.AreEqual("TBL", children.Type);
             Assert.AreEqual("TBL1", children.Name);

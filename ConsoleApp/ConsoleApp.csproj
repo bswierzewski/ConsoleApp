@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <Compile Include="Data\DataReader.cs" />
     <Compile Include="Interfaces\IImportProvider.cs" />
     <Compile Include="Interfaces\ILogger.cs" />

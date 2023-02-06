@@ -18,7 +18,7 @@ namespace ConsoleApp.Data
         private readonly ILogger _logger;
 
         // Collection of ImportedObjects that are processed from the csv data
-        public List<ImportedObject> ImportedObjects { get; set; } = new List<ImportedObject>();
+        public ICollection<ImportedObject> ImportedObjects { get; set; } = new List<ImportedObject>();
 
         public DataReader(IImportProvider importProvider,
             IPrintProvider printerProvider,
